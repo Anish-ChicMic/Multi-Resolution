@@ -1,4 +1,4 @@
-import { _decorator, Component, Node, UITransform, Widget } from 'cc';
+import { _decorator, Component, Node, UITransform, Widget, math, tween, Vec3 } from 'cc';
 const { ccclass, property } = _decorator;
 
 @ccclass('fitHeightWidth')
@@ -27,7 +27,11 @@ export class fitHeightWidth extends Component {
         let aspectRatioSq = squareDim["width"] / squareDim["height"];
         let aspectRatioRect = rectDim["width"] / rectDim["height"];
 
-        this.fitHeightWidth(aspectRatioSq, aspectRatioRect, squareDim, rectDim);
+        // this.fitHeightWidthWithCrop(aspectRatioSq, aspectRatioRect, squareDim, rectDim);
+        this.fitHeightWidth(squareDim, rectDim);
+
+        
+       
 
     }
 
@@ -35,7 +39,7 @@ export class fitHeightWidth extends Component {
 
     }
 
-    fitHeightWidth(aspS: number, aspR: number, sq, rect) {
+    fitHeightWidthWithCrop(aspS: number, aspR: number, sq, rect) {
 
         if (aspS <= aspR) {
             // change height
@@ -49,7 +53,37 @@ export class fitHeightWidth extends Component {
             let scale = this.rectangle.getScale();
             this.rectangle.setScale(scale.x * ratio, scale.y * ratio, 1);
         }
-        else { }
+
+    }
+
+
+
+    fitHeightWidth(squareDim, rectDim){
+        
+        if(rectDim["width"]<rectDim["height"]){
+            // Height changes
+            let ratio = squareDim["height"]/rectDim["height"];
+            let scale = this.rectangle.getScale();
+            this.rectangle.setScale(scale.x, scale.y * ratio, 1);
+        }
+        else if(rectDim["width"]>rectDim["height"]){
+            let ratio = squareDim["width"]/rectDim["width"];
+            let scale = this.rectangle.getScale();
+            this.rectangle.setScale(scale.x * ratio, scale.y, 1);
+        }
+        else{
+            let scale = this.rectangle.getScale();
+            let ratioW = squareDim["width"]/rectDim["width"];
+            let ratioH = squareDim["height"]/rectDim["height"];
+            this.rectangle.setScale(scale.x * ratioW, scale.y * ratioH, 1);
+
+            
+        }
+        // let pos = this.rectangle.getPosition();
+        // tween(this.rectangle)
+        //     .to(3, {position: new Vec3(pos.x, pos.y + 100, pos.z)})
+        //     .start();
+        
 
     }
 }
